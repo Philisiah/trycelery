@@ -9,9 +9,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
-import os
-import dj_database_url
-import django_heroku
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -40,6 +37,8 @@ INSTALLED_APPS = [
     # http://whitenoise.evans.io/en/stable/django.html#using-whitenoise-in-development
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
+    'django_celery_results',
+    'demoapp',
 ]
 
 MIDDLEWARE = [
@@ -135,3 +134,10 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())
+
+
+CELERY_ACCEPT_CONTENT = ['application/json', 'pickle']
+CELERY_TASK_SERIALIZER = 'pickle'
+BROKER_URL = config('REDIS_URL', default='redis://')
+CELERY_RESULT_BACKEND = config('REDIS_URL', default='redis://')
+CELERY_RESULT_SERIALIZER = 'json'
